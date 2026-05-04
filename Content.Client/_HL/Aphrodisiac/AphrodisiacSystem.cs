@@ -1,7 +1,9 @@
 using Content.Shared._HL.Aphrodisiac;
+using Content.Shared.CCVar;
 using Content.Shared.StatusEffectNew;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 
 namespace Content.Client._HL.Aphrodisiac;
@@ -10,8 +12,10 @@ public sealed class AphrodisiacSystem : SharedAphrodisiacSystem
 {
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IOverlayManager _overlayMan = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     private AphrodisiacOverlay _overlay = default!;
+    private bool _showEffects;
 
     public override void Initialize()
     {
@@ -24,10 +28,40 @@ public sealed class AphrodisiacSystem : SharedAphrodisiacSystem
         SubscribeLocalEvent<AphrodisiacStatusEffectComponent, StatusEffectRelayedEvent<LocalPlayerDetachedEvent>>(OnPlayerDetached);
 
         _overlay = new();
+
+        _cfg.OnValueChanged(CCVars.ShowAphrodisiacEffects, OnShowEffectsChanged, true);
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _cfg.UnsubValueChanged(CCVars.ShowAphrodisiacEffects, OnShowEffectsChanged);
+    }
+
+    private void OnShowEffectsChanged(bool value)
+    {
+        _showEffects = value;
+
+        if (!value)
+        {
+            _overlay.CurrentAphrodisiacPower = 0;
+            _overlayMan.RemoveOverlay(_overlay);
+            return;
+        }
+
+        if (_player.LocalEntity is { } local
+            && Status.HasEffectComp<AphrodisiacStatusEffectComponent>(local)
+            && !_overlayMan.HasOverlay<AphrodisiacOverlay>())
+        {
+            _overlayMan.AddOverlay(_overlay);
+        }
     }
 
     private void OnStatusApplied(Entity<AphrodisiacStatusEffectComponent> entity, ref StatusEffectAppliedEvent args)
     {
+        if (!_showEffects)
+            return;
+
         if (!_overlayMan.HasOverlay<AphrodisiacOverlay>())
             _overlayMan.AddOverlay(_overlay);
     }
@@ -46,6 +80,9 @@ public sealed class AphrodisiacSystem : SharedAphrodisiacSystem
 
     private void OnPlayerAttached(Entity<AphrodisiacStatusEffectComponent> entity, ref StatusEffectRelayedEvent<LocalPlayerAttachedEvent> args)
     {
+        if (!_showEffects)
+            return;
+
         _overlayMan.AddOverlay(_overlay);
     }
 
