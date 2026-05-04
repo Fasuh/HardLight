@@ -10,6 +10,8 @@
     Medicine:
       metabolismRate : 0.02
       effects:
+      - !type:Aphrodisiac
+        aphrodisiacPower: 6
       - !type:PopupMessage
         type: Local
         visualType: Large

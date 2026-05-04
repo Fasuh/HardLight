@@ -10,6 +10,8 @@
     Narcotic:
       metabolismRate: 0.05
       effects:
+      - !type:Aphrodisiac
+        aphrodisiacPower: 10
       - !type:PopupMessage
         type: Local
         visualType: Medium
