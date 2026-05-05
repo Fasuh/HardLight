@@ -1,15 +1,11 @@
-using Content.Shared.Speech.EntitySystems;
-using Content.Shared.StatusEffectNew;
-using Content.Shared.Traits.Assorted;
+using Content.Shared.StatusEffect;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._HL.Aphrodisiac;
 
 public abstract class SharedAphrodisiacSystem : EntitySystem
 {
-    public static EntProtoId Aphrodisiac = "StatusEffectAphrodisiac";
-
-    // I also have no idea, copied this from Drunk system.
+    public static readonly ProtoId<StatusEffectPrototype> AphrodisiacKey = "Aphrodisiac";
 
     /* I have no clue why this magic number was chosen, I copied it from slur system and needed it for the overlay
     If you have a more intelligent magic number be my guest to completely explode this value.
@@ -22,22 +18,28 @@ public abstract class SharedAphrodisiacSystem : EntitySystem
     {
     }
 
-    public void TryApplyAphrodisiacs(EntityUid uid, TimeSpan aphrodisiacPower)
+    public void TryApplyAphrodisiacs(EntityUid uid, TimeSpan aphrodisiacPower, StatusEffectsComponent? status = null)
     {
+        if (!Resolve(uid, ref status, false))
+            return;
+
         var ev = new AphrodisiacEvent(aphrodisiacPower);
         RaiseLocalEvent(uid, ref ev);
 
-        Status.TryAddStatusEffectDuration(uid, Aphrodisiac, ev.Duration);
+        if (!Status.HasStatusEffect(uid, AphrodisiacKey, status))
+            Status.TryAddStatusEffect<AphrodisiacStatusEffectComponent>(uid, AphrodisiacKey, ev.Duration, true, status);
+        else
+            Status.TryAddTime(uid, AphrodisiacKey, ev.Duration, status);
     }
 
     public void TryRemoveAphrodisiacs(EntityUid uid)
     {
-        Status.TryRemoveStatusEffect(uid, Aphrodisiac);
+        Status.TryRemoveStatusEffect(uid, AphrodisiacKey);
     }
 
     public void TryRemoveAphrodisiacsTime(EntityUid uid, TimeSpan aphrodisiacPower)
     {
-        Status.TryAddTime(uid, Aphrodisiac, - aphrodisiacPower);
+        Status.TryRemoveTime(uid, AphrodisiacKey, aphrodisiacPower);
     }
 
     [ByRefEvent]

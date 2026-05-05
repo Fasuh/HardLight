@@ -1,4 +1,5 @@
 using Content.Shared._HL.Aphrodisiac;
+using Content.Shared.StatusEffect;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Enums;
@@ -41,22 +42,18 @@ public sealed class AphrodisiacOverlay : Overlay
         if (playerEntity == null)
             return;
 
-        var statusSys = _sysMan.GetEntitySystem<Shared.StatusEffectNew.StatusEffectsSystem>();
-        if (!statusSys.TryGetMaxTime<AphrodisiacStatusEffectComponent>(playerEntity.Value, out var status))
+        if (!_entityManager.HasComponent<AphrodisiacStatusEffectComponent>(playerEntity)
+            || !_entityManager.TryGetComponent<StatusEffectsComponent>(playerEntity, out var status))
             return;
 
-        var time = status.Item2;
+        var statusSys = _sysMan.GetEntitySystem<StatusEffectsSystem>();
+        if (!statusSys.TryGetTime(playerEntity.Value, SharedAphrodisiacSystem.AphrodisiacKey, out var time, status))
+            return;
 
-        var power = SharedAphrodisiacSystem.MagicNumber;
+        var curTime = _timing.CurTime;
+        var power = (float) (time.Value.Item2 - curTime).TotalSeconds;
 
-        if (time != null)
-        {
-            var curTime = _timing.CurTime;
-            power = (float) (time - curTime).Value.TotalSeconds;
-        }
-
-        CurrentAphrodisiacPower += 8f * (power * 0.5f - CurrentAphrodisiacPower) * args.DeltaSeconds / (power+1);
-
+        CurrentAphrodisiacPower += 8f * (power * 0.5f - CurrentAphrodisiacPower) * args.DeltaSeconds / (power + 1);
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
@@ -95,7 +92,6 @@ public sealed class AphrodisiacOverlay : Overlay
     ///     Converts the # of seconds the aphrodisiac effect lasts for (aphrodisiac power) to a percentage
     ///     used by the actual shader.
     /// </summary>
-    /// <param name="aphrodisiacPower"></param>
     private float AphrodisiacPowerToVisual(float aphrodisiacPower)
     {
         return Math.Clamp((aphrodisiacPower - VisualThreshold) / PowerDivisor, 0.0f, 1.0f);

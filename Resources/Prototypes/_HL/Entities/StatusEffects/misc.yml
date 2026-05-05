@@ -1,7 +1,3 @@
 # Causes you to see a pink effect
-- type: entity
-  parent: MobStatusEffectDebuff
-  id: StatusEffectAphrodisiac
-  name: aphrodisiac
-  components:
-  - type: AphrodisiacStatusEffect
+- type: statusEffect
+  id: Aphrodisiac
