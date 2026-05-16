@@ -22,8 +22,8 @@ public sealed class AphrodisiacOverlay : Overlay
 
     public float CurrentAphrodisiacPower = 0.0f;
 
-    private const float VisualThreshold = 10.0f;
-    private const float PowerDivisor = 140.0f;
+    private const float VisualThreshold = 0.0f;
+    private const float PowerDivisor = 5.0f;
 
     private float _visualScale = 0;
 
@@ -53,7 +53,7 @@ public sealed class AphrodisiacOverlay : Overlay
         var curTime = _timing.CurTime;
         var power = (float) (time.Value.Item2 - curTime).TotalSeconds;
 
-        CurrentAphrodisiacPower += 8f * (power * 0.5f - CurrentAphrodisiacPower) * args.DeltaSeconds / (power + 1);
+        CurrentAphrodisiacPower += 1f * (power * 0.5f - CurrentAphrodisiacPower) * args.DeltaSeconds / (power + 1);
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)

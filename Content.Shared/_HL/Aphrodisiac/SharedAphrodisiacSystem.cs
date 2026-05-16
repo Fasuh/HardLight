@@ -29,7 +29,7 @@ public abstract class SharedAphrodisiacSystem : EntitySystem
         if (!Status.HasStatusEffect(uid, AphrodisiacKey, status))
             Status.TryAddStatusEffect<AphrodisiacStatusEffectComponent>(uid, AphrodisiacKey, ev.Duration, true, status);
         else
-            Status.TryAddTime(uid, AphrodisiacKey, ev.Duration, status);
+            Status.TrySetTime(uid, AphrodisiacKey, ev.Duration, status);
     }
 
     public void TryRemoveAphrodisiacs(EntityUid uid)
