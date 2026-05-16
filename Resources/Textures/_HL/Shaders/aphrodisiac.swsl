@@ -32,6 +32,6 @@ void fragment() {
 
     highp vec4 tex = zTextureSpec(SCREEN_TEXTURE, uv);
 
-    highp vec4 tint = vec4(1.0, 0.346, 0.747, alpha);
+    highp vec4 tint = vec4(1.0, 0.078, 0.576, alpha);
     COLOR = mix(tex, vec4(tint.rgb, 1.0), tint.a * vignette);
 }

@@ -78,7 +78,7 @@ public sealed class AphrodisiacOverlay : Overlay
         var handle = args.WorldHandle;
         _aphrodisiacShader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
         _aphrodisiacShader.SetParameter("aphrodisiacPower", _visualScale);
-        _aphrodisiacShader.SetParameter("alpha", 0.3f);
+        _aphrodisiacShader.SetParameter("alpha", 0.6f);
         _aphrodisiacShader.SetParameter("outerMultiplier", 8.0f);
         _aphrodisiacShader.SetParameter("minimumInnerOut", 0.3f);
         _aphrodisiacShader.SetParameter("minimumInnerIn", 0.1f);
