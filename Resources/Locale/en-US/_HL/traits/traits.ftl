@@ -129,3 +129,9 @@ hl-trait-romantic-moods-desc = Every half hour or so you receive a private remin
 trait-hardskin-name = Hard Skin
 trait-hardskin-desc = Your skin is too hard for needles to pierce.
 injector-component-deny-hardskin = {CAPITALIZE(THE($target))}'s skin is too hard for the needle to pierce.
+
+trait-ultravision-nobypass-name = Ultraviolet vision (Untoggleable)
+trait-ultravision-nobypass-desc = Through a random mutation, you perceive the world with ultraviolet light. (Note this cannot be disable with the accessibility toggle)
+
+trait-deuteranopia-nobypass-name = Deuteranopia (Untoggleable)
+trait-deuteranopia-nobypass-desc = Through a random mutation, you have red-green colour blindness. (Note this cannot be disable with the accessibility toggle)
